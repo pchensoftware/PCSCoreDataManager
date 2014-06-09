@@ -76,9 +76,8 @@
       return _persistentStoreCoordinator;
    }
    
-   NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-   NSString *documentsDirectory = [paths firstObject];
-   NSURL *storeURL = [[NSURL fileURLWithPath:documentsDirectory] URLByAppendingPathComponent:[self.modelFilebaseName stringByAppendingString:@".sqlite"]];
+   NSURL *documentsDirectoryURL = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+   NSURL *storeURL = [documentsDirectoryURL URLByAppendingPathComponent:[self.modelFilebaseName stringByAppendingString:@".sqlite"]];
    NSError *error = nil;
    
    // Lightweight migration
