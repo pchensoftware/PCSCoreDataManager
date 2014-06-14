@@ -18,4 +18,6 @@
 - (BOOL)saveContext;
 - (NSManagedObject *)objectWithURIString:(NSString *)uriString;
 
+- (int)executeRequestToCountNumberOfEntitiesWithName:(NSString *)entityName keyPath:(NSString *)keyPath;
+
 @end

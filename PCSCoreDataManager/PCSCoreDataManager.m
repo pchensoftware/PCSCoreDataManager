@@ -129,4 +129,26 @@
    return managedObject;
 }
 
+- (int)executeRequestToCountNumberOfEntitiesWithName:(NSString *)entityName keyPath:(NSString *)keyPath {
+   NSExpression *numEntitiesExpression = [NSExpression expressionForKeyPath:keyPath];
+   NSExpression *countExpression = [NSExpression expressionForFunction:@"count:" arguments:@[ numEntitiesExpression ]];
+   NSExpressionDescription *expressionDescription = [[NSExpressionDescription alloc] init];
+   expressionDescription.name = @"countEntities";
+   expressionDescription.expression = countExpression;
+   expressionDescription.expressionResultType = NSInteger32AttributeType;
+   
+   NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
+   request.propertiesToFetch = @[ expressionDescription ];
+   request.resultType = NSDictionaryResultType;
+   
+   NSError *error = nil;
+   NSArray *results = [[PCSCoreDataManager manager].context executeFetchRequest:request error:&error];
+   if (! results) {
+      NSLog(@"ERROR Couldn't fetch - %@", error);
+      return 0;
+   }
+   
+   return [[results firstObject][@"countEntities"] intValue];
+}
+
 @end
