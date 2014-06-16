@@ -19,5 +19,7 @@
 - (NSManagedObject *)objectWithURIString:(NSString *)uriString;
 
 - (int)executeRequestToCountNumberOfEntitiesWithName:(NSString *)entityName keyPath:(NSString *)keyPath;
+- (NSDate *)executeRequestForEarliestDateOfEntitiesWithName:(NSString *)entityName keyPath:(NSString *)keyPath;
+- (NSDate *)executeRequestForLatestDateOfEntitiesWithName:(NSString *)entityName keyPath:(NSString *)keyPath;
 
 @end

@@ -130,10 +130,10 @@
 }
 
 - (int)executeRequestToCountNumberOfEntitiesWithName:(NSString *)entityName keyPath:(NSString *)keyPath {
-   NSExpression *numEntitiesExpression = [NSExpression expressionForKeyPath:keyPath];
-   NSExpression *countExpression = [NSExpression expressionForFunction:@"count:" arguments:@[ numEntitiesExpression ]];
+   NSExpression *keyPathExpression = [NSExpression expressionForKeyPath:keyPath];
+   NSExpression *countExpression = [NSExpression expressionForFunction:@"count:" arguments:@[ keyPathExpression ]];
    NSExpressionDescription *expressionDescription = [[NSExpressionDescription alloc] init];
-   expressionDescription.name = @"countEntities";
+   expressionDescription.name = @"fieldName";
    expressionDescription.expression = countExpression;
    expressionDescription.expressionResultType = NSInteger32AttributeType;
    
@@ -148,7 +148,37 @@
       return 0;
    }
    
-   return [[results firstObject][@"countEntities"] intValue];
+   return [[results firstObject][@"fieldName"] intValue];
+}
+
+- (NSDate *)executeRequestForEarliestDateOfEntitiesWithName:(NSString *)entityName keyPath:(NSString *)keyPath {
+   return [self _executeRequestForDateWithFunctionName:@"min:" ofEntitiesWithName:entityName keyPath:keyPath];
+}
+
+- (NSDate *)executeRequestForLatestDateOfEntitiesWithName:(NSString *)entityName keyPath:(NSString *)keyPath {
+   return [self _executeRequestForDateWithFunctionName:@"max:" ofEntitiesWithName:entityName keyPath:keyPath];
+}
+
+- (NSDate *)_executeRequestForDateWithFunctionName:(NSString *)functionName ofEntitiesWithName:(NSString *)entityName keyPath:(NSString *)keyPath {
+   NSExpression *keyPathExpression = [NSExpression expressionForKeyPath:keyPath];
+   NSExpression *functionExpression = [NSExpression expressionForFunction:functionName arguments:@[ keyPathExpression ]];
+   NSExpressionDescription *expressionDescription = [[NSExpressionDescription alloc] init];
+   expressionDescription.name = @"fieldName";
+   expressionDescription.expression = functionExpression;
+   expressionDescription.expressionResultType = NSDateAttributeType;
+   
+   NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
+   request.propertiesToFetch = @[ expressionDescription ];
+   request.resultType = NSDictionaryResultType;
+   
+   NSError *error = nil;
+   NSArray *results = [[PCSCoreDataManager manager].context executeFetchRequest:request error:&error];
+   if (! results) {
+      NSLog(@"ERROR Couldn't fetch - %@", error);
+      return 0;
+   }
+   
+   return [results firstObject][@"fieldName"];
 }
 
 @end
