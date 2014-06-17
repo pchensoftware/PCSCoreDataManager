@@ -152,14 +152,26 @@
 }
 
 - (NSDate *)executeRequestForEarliestDateOfEntitiesWithName:(NSString *)entityName keyPath:(NSString *)keyPath {
-   return [self _executeRequestForDateWithFunctionName:@"min:" ofEntitiesWithName:entityName keyPath:keyPath];
+   return [self executeRequestForEarliestDateOfEntitiesWithName:entityName keyPath:keyPath predicate:nil];
+}
+
+- (NSDate *)executeRequestForEarliestDateOfEntitiesWithName:(NSString *)entityName keyPath:(NSString *)keyPath predicate:(NSPredicate *)predicate {
+   return [self _executeRequestForDateWithFunctionName:@"min:" ofEntitiesWithName:entityName keyPath:keyPath predicate:predicate];
 }
 
 - (NSDate *)executeRequestForLatestDateOfEntitiesWithName:(NSString *)entityName keyPath:(NSString *)keyPath {
-   return [self _executeRequestForDateWithFunctionName:@"max:" ofEntitiesWithName:entityName keyPath:keyPath];
+   return [self executeRequestForLatestDateOfEntitiesWithName:entityName keyPath:keyPath predicate:nil];
 }
 
-- (NSDate *)_executeRequestForDateWithFunctionName:(NSString *)functionName ofEntitiesWithName:(NSString *)entityName keyPath:(NSString *)keyPath {
+- (NSDate *)executeRequestForLatestDateOfEntitiesWithName:(NSString *)entityName keyPath:(NSString *)keyPath predicate:(NSPredicate *)predicate {
+   return [self _executeRequestForDateWithFunctionName:@"max:" ofEntitiesWithName:entityName keyPath:keyPath predicate:nil];
+}
+
+- (NSDate *)_executeRequestForDateWithFunctionName:(NSString *)functionName
+                                ofEntitiesWithName:(NSString *)entityName
+                                           keyPath:(NSString *)keyPath
+                                         predicate:(NSPredicate *)predicate
+{
    NSExpression *keyPathExpression = [NSExpression expressionForKeyPath:keyPath];
    NSExpression *functionExpression = [NSExpression expressionForFunction:functionName arguments:@[ keyPathExpression ]];
    NSExpressionDescription *expressionDescription = [[NSExpressionDescription alloc] init];
@@ -168,6 +180,7 @@
    expressionDescription.expressionResultType = NSDateAttributeType;
    
    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
+   request.predicate = predicate;
    request.propertiesToFetch = @[ expressionDescription ];
    request.resultType = NSDictionaryResultType;
    

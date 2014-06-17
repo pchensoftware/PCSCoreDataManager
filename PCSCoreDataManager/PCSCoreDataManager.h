@@ -20,6 +20,8 @@
 
 - (int)executeRequestToCountNumberOfEntitiesWithName:(NSString *)entityName keyPath:(NSString *)keyPath;
 - (NSDate *)executeRequestForEarliestDateOfEntitiesWithName:(NSString *)entityName keyPath:(NSString *)keyPath;
+- (NSDate *)executeRequestForEarliestDateOfEntitiesWithName:(NSString *)entityName keyPath:(NSString *)keyPath predicate:(NSPredicate *)predicate;
 - (NSDate *)executeRequestForLatestDateOfEntitiesWithName:(NSString *)entityName keyPath:(NSString *)keyPath;
+- (NSDate *)executeRequestForLatestDateOfEntitiesWithName:(NSString *)entityName keyPath:(NSString *)keyPath predicate:(NSPredicate *)predicate;
 
 @end
